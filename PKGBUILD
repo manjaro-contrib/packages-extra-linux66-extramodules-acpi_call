@@ -6,7 +6,7 @@
 # Contributor: fnord0 <fnord0@riseup.net>
 
 _linuxprefix=linux66
-_extramodules=extramodules-6.6-MANJARO
+_kernver="$(cat /usr/src/${_linuxprefix}/version)"
 pkgname=$_linuxprefix-acpi_call
 _pkgname=acpi_call
 pkgver=1.2.2
@@ -19,12 +19,10 @@ depends=("$_linuxprefix")
 makedepends=("$_linuxprefix-headers")
 provides=("$_pkgname")
 groups=("$_linuxprefix-extramodules")
-install=$_pkgname.install
 source=("$_pkgname-$pkgver.tar.gz::${url}/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('8b1902a94395c2fa5a97f81c94868a9cbc46a48e12309ad01626439bde96f1d9')
 
 build() {
-  _kernver="$(cat /usr/lib/modules/${_extramodules}/version)"
   cd "${_pkgname}-${pkgver}"
   make KVER="${_kernver}"
 }
@@ -32,14 +30,14 @@ build() {
 package() {
   cd "${_pkgname}-${pkgver}"
 
-  install -dm 755 "${pkgdir}"/usr/lib/{modules/${_extramodules},modules-load.d}
-  install -m 644 acpi_call.ko "${pkgdir}"/usr/lib/modules/${_extramodules}/
-  gzip "${pkgdir}"/usr/lib/modules/${_extramodules}/acpi_call.ko
+  install -dm 755 "${pkgdir}"/usr/lib/{modules/${_kernver}/extramodules,modules-load.d}
+  install -m 644 acpi_call.ko "${pkgdir}"/usr/lib/modules/${_kernver}/extramodules/
+  gzip "${pkgdir}"/usr/lib/modules/${_kernver}/extramodules/acpi_call.ko
   echo acpi_call > "${pkgdir}"/usr/lib/modules-load.d/${pkgname}.conf
 
   install -dm 755 "${pkgdir}"/usr/share/${pkgname}
   cp -dr --no-preserve='ownership' {examples,support} "${pkgdir}"/usr/share/${pkgname}/
 
-  sed -i "s/EXTRAMODULES=.*/EXTRAMODULES=$_extramodules/" \
+  sed -i "s/EXTRAMODULES=.*/EXTRAMODULES=${_kernver}/extramodules/" \
     "$startdir/acpi_call.install"
 }
