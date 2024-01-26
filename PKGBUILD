@@ -37,7 +37,4 @@ package() {
 
   install -dm 755 "${pkgdir}"/usr/share/${pkgname}
   cp -dr --no-preserve='ownership' {examples,support} "${pkgdir}"/usr/share/${pkgname}/
-
-  sed -i "s/EXTRAMODULES=.*/EXTRAMODULES=${_kernver}/extramodules/" \
-    "$startdir/acpi_call.install"
 }
