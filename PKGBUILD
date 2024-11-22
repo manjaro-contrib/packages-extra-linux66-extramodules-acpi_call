@@ -1,7 +1,5 @@
 # Maintainer: Philip Müller <philm[at]manjaro[dot]org>
 # Maintainer: Bernhard Landauer <bernhard@manjaro.org>
-
-# Arch credits:
 # Contributor: Maxime Gauduin <alucryd@gmail.com>
 # Contributor: mortzu <me@mortzu.de>
 # Contributor: fnord0 <fnord0@riseup.net>
@@ -11,7 +9,7 @@ _linuxprefix=linux66
 _module=acpi_call
 pkgname="${_linuxprefix}-${_module}"
 pkgver=1.2.2
-pkgrel=94
+pkgrel=95
 pkgdesc='A linux kernel module that enables calls to ACPI methods through /proc/acpi/call'
 arch=('x86_64')
 url="https://github.com/nix-community/acpi_call"
@@ -20,8 +18,7 @@ groups=("${_linuxprefix}-extramodules")
 depends=("${_linuxprefix}")
 makedepends=("${_linuxprefix}-headers" "acpi_call-dkms=$pkgver")
 provides=("${_module}")
-source=("${_module}-$pkgver.tar.gz::${url}/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('8b1902a94395c2fa5a97f81c94868a9cbc46a48e12309ad01626439bde96f1d9')
+conflicts=("${_module}")
 
 build() {
   _kernver="$(cat /usr/src/${_linuxprefix}/version)"
@@ -36,7 +33,7 @@ package() {
     "$pkgdir/usr/lib/modules/${_kernver}/extramodules/"
 
   # compress each module individually
-  find "$pkgdir" -name '*.ko' -exec xz -T1 {} +
+  find "${pkgdir}" -name '*.ko' -exec zstd --rm -19 {} +
 
   echo acpi_call | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules-load.d/$pkgname.conf"
 
