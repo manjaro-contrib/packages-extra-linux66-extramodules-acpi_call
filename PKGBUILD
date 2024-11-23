@@ -9,7 +9,7 @@ _linuxprefix=linux66
 _module=acpi_call
 pkgname="${_linuxprefix}-${_module}"
 pkgver=1.2.2
-pkgrel=96
+pkgrel=97
 pkgdesc='A linux kernel module that enables calls to ACPI methods through /proc/acpi/call'
 arch=('x86_64')
 url="https://github.com/nix-community/acpi_call"
@@ -18,7 +18,7 @@ groups=("${_linuxprefix}-extramodules")
 depends=("${_linuxprefix}")
 makedepends=("${_linuxprefix}-headers" "acpi_call-dkms=$pkgver")
 provides=("${_module}")
-conflicts=("${_module}")
+conflicts=("${_module}-dkms")
 
 build() {
   _kernver="$(cat /usr/src/${_linuxprefix}/version)"
