@@ -9,7 +9,7 @@ _linuxprefix=linux66
 _module=acpi_call
 pkgname="${_linuxprefix}-${_module}"
 pkgver=1.2.2
-pkgrel=98
+pkgrel=99
 pkgdesc='A linux kernel module that enables calls to ACPI methods through /proc/acpi/call'
 arch=('x86_64')
 url="https://github.com/nix-community/acpi_call"
@@ -29,7 +29,7 @@ build() {
 package() {
   _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
-  install -Dm644 "${_module}/${pkgver}/${_kernver}/$CARCH/module"/* -t \
+  install -Dm644 "${_module}/${pkgver}/${_kernver}/$CARCH/module"/*.ko* -t \
     "$pkgdir/usr/lib/modules/${_kernver}/extramodules/"
 
   # compress each module individually
